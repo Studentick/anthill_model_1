@@ -1,0 +1,30 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace anthill
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Egg e1 = new Egg(1);
+            Egg e2 = new Egg(1);
+            Egg e3 = new Egg(1);
+            Egg e4 = new Egg(1);
+            Egg e5 = new Egg(1);
+            Egg e6 = new Egg(1);
+            Egg e7 = new Egg(2);
+            Egg e8 = new Egg(3);
+            Console.WriteLine(Egg.Clutch.Count);
+            //// Delete all elements, where parrentId == 1
+            //Egg.Clutch.RemoveAll(x => x.ParrentId == 1);
+            e5.Destroy();
+            Console.WriteLine(Egg.Clutch.Count);
+
+            Console.ReadKey();
+        }
+    }
+}
