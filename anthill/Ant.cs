@@ -8,7 +8,8 @@ namespace anthill
 {
     class Ant
     {
-
+        public delegate void CrAnt(Ant junior_ant);
+        public static event CrAnt OnCreateAnt;
         public static List<Ant> AntHill;
         // Для оптимизации думал short использовать, но передумал
         public const string RAB = "Worker"; public const string SW = "retinue";
@@ -36,6 +37,8 @@ namespace anthill
                 AntHill = new List<Ant>();
             }
             AntHill.Add(this);
+
+            OnCreateAnt?.Invoke(this);
         }
         
         // To AllAnts
