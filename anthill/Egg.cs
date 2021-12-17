@@ -23,6 +23,7 @@ namespace anthill
         public void Hatch()
         {
 
+
             this.Destroy("вылупления птенца");
         }
 
