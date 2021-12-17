@@ -8,6 +8,7 @@ namespace anthill
 {
     class Ant
     {
+
         public static List<Ant> AntHill;
         // Для оптимизации думал short использовать, но передумал
         public const string RAB = "Worker"; public const string SW = "retinue";
