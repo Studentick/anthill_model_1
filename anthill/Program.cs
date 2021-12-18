@@ -28,9 +28,11 @@ namespace anthill
             //Console.WriteLine(Egg.Clutch.Count);
 
             Ant.OnCreateAnt += (ant) => { Console.WriteLine($"Ant {ant.Id} is created with rang {ant.Status}"); };
-
+            Egg.OnHatchEgg += (msg) => { Console.WriteLine(msg); };
             new Ant();
             new Ant();
+            new Egg(0);
+            Egg.Clutch[0].Hatch();
 
             Console.ReadKey();
         }

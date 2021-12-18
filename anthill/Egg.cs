@@ -8,6 +8,8 @@ namespace anthill
 {
     class Egg
     {
+        public delegate void HchEgg(string msg);
+        public static event HchEgg OnHatchEgg;
         static public List<Egg> Clutch;
         public ulong ParrentId { get;}
         public Egg(ulong parrent)
@@ -22,8 +24,8 @@ namespace anthill
         }
         public void Hatch()
         {
-            new Ant();
-
+            var ant = new Ant();
+            OnHatchEgg?.Invoke($"Было вылуплено яйцо муравья ({this.ParrentId}) и рождён муравей ({ant.Id})");
             this.Destroy("вылупления птенца");
         }
 
