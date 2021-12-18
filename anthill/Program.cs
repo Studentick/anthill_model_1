@@ -2,12 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace anthill
 {
     class Program
     {
+        public static int d = 0;
+        public delegate void NtDay();
+        public static event NtDay NextDay;
         static void Main(string[] args)
         {
             //todo: запилить событие рождения муравья, возвращаюшее ссылку на объект муравья
@@ -33,8 +37,23 @@ namespace anthill
             new Ant();
             new Egg(0);
             Egg.Clutch[0].Hatch();
+            NextDay += () => { Console.WriteLine($"Прошел {d}-й день в муравейнике"); d++; };
+            RingOfSansara();
 
             Console.ReadKey();
         }
+
+        static void RingOfSansara()
+        {
+            new Thread(() =>
+            {
+                while (true)
+                {
+                    NextDay?.Invoke();
+                    Thread.Sleep(3000);
+                }
+            }).Start();
+        }
+
     }
 }
