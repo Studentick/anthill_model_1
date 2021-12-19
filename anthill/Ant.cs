@@ -180,10 +180,13 @@ namespace anthill
         {
             if(this.Status != RAB)
             {
-                int count = new Random().Next(3,9);
-                for (int i = 0; i < count; i++)
-                    new Egg(this.Id);
-                Thread.Sleep(10000);
+                if (Egg.Clutch.Count < Egg.max_egg)
+                {
+                    int count = new Random().Next(3, 9);
+                    for (int i = 0; i < count; i++)
+                        new Egg(this.Id);
+                    Thread.Sleep(10000);
+                }
             }
         }
 

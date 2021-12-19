@@ -8,6 +8,7 @@ namespace anthill
 {
     class Egg
     {
+        public const int max_egg = 40;
         public delegate void HchEgg(string msg);
         public static event HchEgg OnHatchEgg;
         int ttl;
