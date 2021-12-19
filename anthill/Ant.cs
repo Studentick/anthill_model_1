@@ -75,6 +75,7 @@ namespace anthill
         {
             if (this.Health == -1)
             {
+                Console.WriteLine("Ошибка в дестрое муравья");
                 allive = false;
                 return;
             }
@@ -89,6 +90,7 @@ namespace anthill
         {
             if (Ttl > QnMxTtl)
             {
+                Console.WriteLine("Ошибка в дестрое королевы");
                 Q_id = null;
                 return true;
             }
@@ -101,6 +103,7 @@ namespace anthill
             // egg = EggCount();
             if ((egg > 0 && Q_id != null && Q_id != this.Id) || (Ttl > SwMxTtl))
             {
+                Console.WriteLine("Ошибка в дестрое свиты");
                 svita_count--;
                 return true;
             }
@@ -110,6 +113,7 @@ namespace anthill
         {
             if ((fail_counter > 2 && this.Health == 1) || (Ttl > WkMXTtl))
             {
+                Console.WriteLine("Ошибка в дестрое рабочего");
                 return true;
             }
             return false;
@@ -152,6 +156,7 @@ namespace anthill
         private void CareHive()
         {
             Console.WriteLine($"Ant {this.Id} on tudy in hive");
+            Thread.Sleep(100);
         }
         private void Forage()
         {
@@ -162,9 +167,13 @@ namespace anthill
             {
                 this.fail_counter++;
             }
+            Thread.Sleep(300);
         }
         public void ToSvita()
         {
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.WriteLine($"{this.Id} пытается стать свитой");
+            Console.ResetColor();
             if (this.Status != SW || this.Status != QN)
             {
                 if (svita_count < 5) //10
@@ -192,14 +201,24 @@ namespace anthill
 
         public void AntIteration()
         {
+            DB(1);
             this.Destroy();
+            DB(2);
             this.Eat();
-            switch(this.Status)
+            DB(3);
+            switch (this.Status)
             {
-                case QN: QueenIteration(); break;
-                case SW: SwitaIteration(); break;
-                case RAB: WorkerIteration(); break;
+                case QN: QueenIteration(); DB(4); break;
+                case SW: SwitaIteration(); DB(5); break;
+                case RAB: WorkerIteration(); DB(6); break;
             }
+            DB(10);
+        }
+        public static void DB(int i)
+        {
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine($"Compl {i}");
+            Console.ResetColor();
         }
         void QueenIteration()
         {
@@ -212,8 +231,11 @@ namespace anthill
         }
         void WorkerIteration()
         {
+            DB(7);
             ToSvita();
+            DB(8);
             Work();
+            DB(9);
         }
 
     }

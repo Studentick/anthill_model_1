@@ -33,15 +33,39 @@ namespace anthill
             //Console.WriteLine(Egg.Clutch.Count);
 
             Ant.OnCreateAnt += (ant) => { Console.WriteLine($"Ant {ant.Id} is created with rang {ant.Status}"); };
+            Ant.OnCreateAnt += ant => { AntLiveCicle(ant); };
             Egg.OnHatchEgg += (msg) => { Console.WriteLine(msg); };
-            new Ant();
-            new Ant();
-            new Egg(0);
-            Egg.Clutch[0].Hatch();
             NextMonth += () => { Console.WriteLine($"Прошел {d}-й день в муравейнике"); d++; };
             RingOfSansara();
+            new Ant();
+            new Ant();
+            Console.WriteLine("fggfgfdg");
 
             Console.ReadKey();
+        }
+
+        static void AntLiveCicle(Ant ant)
+        {
+            new Thread(() =>
+            {
+                Ant.DB(-1);
+                while (ant.allive)
+                {
+                    Console.ForegroundColor = ConsoleColor.DarkMagenta;
+                    Console.WriteLine(ant.allive);
+                    Console.ResetColor();
+                    Ant.DB(0);
+                    //Console.WriteLine($"The {ant.Id} is allive");
+                    ant.AntIteration();
+                    Ant.DB(11);
+                    Thread.Sleep(100);
+                    Ant.DB(12);
+                    Console.WriteLine(ant.allive);
+                    Console.WriteLine(Ant.AntHill[0].allive);
+                }
+                Ant.AntHill.Remove(ant);
+            }
+                ).Start();
         }
 
         static void RingOfSansara()
@@ -51,10 +75,11 @@ namespace anthill
                 while (true)
                 {
                     NextMonth?.Invoke();
-                    Thread.Sleep(3000);
+                    Thread.Sleep(15000);
                 }
             }).Start();
         }
+
 
     }
 }
