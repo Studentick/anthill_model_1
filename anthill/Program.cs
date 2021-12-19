@@ -37,7 +37,7 @@ namespace anthill
             Egg.OnHatchEgg += (msg) => { Console.WriteLine(msg); };
             NextMonth += () => { Console.WriteLine($"Прошел {d}-й день в муравейнике"); d++; };
             RingOfSansara();
-            new Ant();
+            //new Ant();
             new Ant();
             Console.WriteLine("fggfgfdg");
 
@@ -51,17 +51,10 @@ namespace anthill
                 Ant.DB(-1);
                 while (ant.allive)
                 {
-                    Console.ForegroundColor = ConsoleColor.DarkMagenta;
-                    Console.WriteLine(ant.allive);
-                    Console.ResetColor();
-                    Ant.DB(0);
-                    //Console.WriteLine($"The {ant.Id} is allive");
+                    Console.WriteLine($"Муравей-{ant.Id} Начал работу ");
                     ant.AntIteration();
-                    Ant.DB(11);
-                    Thread.Sleep(100);
-                    Ant.DB(12);
-                    Console.WriteLine(ant.allive);
-                    Console.WriteLine(Ant.AntHill[0].allive);
+                    Console.WriteLine($"Муравей-{ant.Id} Закончил работу ");
+                    Thread.Sleep(AntCong.AntLiveCicle);
                 }
                 Ant.AntHill.Remove(ant);
             }
@@ -75,7 +68,7 @@ namespace anthill
                 while (true)
                 {
                     NextMonth?.Invoke();
-                    Thread.Sleep(15000);
+                    Thread.Sleep(AntCong.RingOfSansara);
                 }
             }).Start();
         }

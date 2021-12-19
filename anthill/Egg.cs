@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace anthill
@@ -80,6 +81,7 @@ namespace anthill
             Console.WriteLine($"Яйцо было уничтожено по причине {cause}");
             Console.ResetColor();
             Clutch.Remove(this);
+            Thread.Sleep(AntCong.DestroyEgg);
         }
 
     }
