@@ -11,7 +11,7 @@ namespace anthill
     {
         public static int d = 0;
         public delegate void NtDay();
-        public static event NtDay NextDay;
+        public static event NtDay NextMonth;
         static void Main(string[] args)
         {
             //todo: привязать к переключению дней увеличение ТТЛ муравья
@@ -38,7 +38,7 @@ namespace anthill
             new Ant();
             new Egg(0);
             Egg.Clutch[0].Hatch();
-            NextDay += () => { Console.WriteLine($"Прошел {d}-й день в муравейнике"); d++; };
+            NextMonth += () => { Console.WriteLine($"Прошел {d}-й день в муравейнике"); d++; };
             RingOfSansara();
 
             Console.ReadKey();
@@ -50,7 +50,7 @@ namespace anthill
             {
                 while (true)
                 {
-                    NextDay?.Invoke();
+                    NextMonth?.Invoke();
                     Thread.Sleep(3000);
                 }
             }).Start();

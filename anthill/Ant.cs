@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace anthill
@@ -16,13 +17,24 @@ namespace anthill
         public const string QN = "queen";
         protected static short svita_count = 0;
         protected static ulong? Q_id = null;
+        public static ulong? Queen_id
+        {
+            get
+            {
+                return Q_id;
+            }
+        }
         protected static ulong ID;
         private ushort fail_counter;
         public bool allive;
         public ulong Id { get; }
         public string Status { get; private set; }
         public short Health { get; } // 1 - Yes, 0 - Can Eat, -1 - No
-        public int Ttl { get; }
+        public int Ttl { get; private set; }
+        public const int MaxAntIntHill = 30;
+
+        // Царица 15 - 20 лет, Свита и рабочие 7 лет
+        int QnMxTtl = 65535; int SwMxTtl = 55535; int WkMXTtl = 10000;
 
         public Ant()
         {
@@ -39,6 +51,9 @@ namespace anthill
             AntHill.Add(this);
 
             OnCreateAnt?.Invoke(this);
+            // Я так понимаю сейчас будет костыль в этой реализации, 
+            // а правильная реализация - это использование расширений
+            Program.NextMonth += () => { this.Ttl++; };
         }
         
         // To AllAnts
@@ -72,7 +87,7 @@ namespace anthill
         }
         public bool QueenDestroy()
         {
-            if (Ttl > 65535)
+            if (Ttl > QnMxTtl)
             {
                 Q_id = null;
                 return true;
@@ -84,7 +99,7 @@ namespace anthill
         {
             int egg = 0;
             // egg = EggCount();
-            if (egg > 0 && Q_id != null && Q_id != this.Id)
+            if ((egg > 0 && Q_id != null && Q_id != this.Id) || (Ttl > SwMxTtl))
             {
                 svita_count--;
                 return true;
@@ -93,7 +108,7 @@ namespace anthill
         }
         public bool WorkerDestroy()
         {
-            if (fail_counter > 2 && this.Health == 1)
+            if ((fail_counter > 2 && this.Health == 1) || (Ttl > WkMXTtl))
             {
                 return true;
             }
@@ -104,16 +119,22 @@ namespace anthill
         public void GetQueenInfo()
         {
             // Search in ants list ant where ant.id = Q_id
-            Console.WriteLine("Queen status = {Q.status}, age = {Q.ttl}");
+            Console.WriteLine("Queen status = {Q.status}, age = {Q.ttl}. by ant-{this.Id}");
+            PutEggs();
         }
 
         public void ToQueen()
         {
+            short cr = (short)new Random().Next(1,4);
             if (Q_id == null)
-                if (this.Status == SW)
+                if (this.Status == SW && cr == 2)
                 {
                     this.Status = QN;
                     Q_id = this.Id;
+                    List<Ant> tmp = AntHill.Where(x => x.Status == SW).ToList<Ant>();
+                    tmp.AsParallel().ForAll(x => x.Destroy());
+                    List<Egg> temp2 = Egg.Clutch.Where(x => x.ParrentId != this.Id).ToList<Egg>();
+                    temp2.AsParallel().ForAll(x=>x.Destroy());
                 }
         }
         // Workers
@@ -146,12 +167,50 @@ namespace anthill
         {
             if (this.Status != SW || this.Status != QN)
             {
-                if (svita_count < 10)
+                if (svita_count < 5) //10
                 {
                     this.Status = SW;
                     svita_count++;
+                    Thread.Sleep(1000);
                 }
             }
+        }
+
+        void PutEggs()
+        {
+            if(this.Status != RAB)
+            {
+                int count = new Random().Next(3,9);
+                for (int i = 0; i < count; i++)
+                    new Egg(this.Id);
+                Thread.Sleep(10000);
+            }
+        }
+
+        public void AntIteration()
+        {
+            this.Destroy();
+            this.Eat();
+            switch(this.Status)
+            {
+                case QN: QueenIteration(); break;
+                case SW: SwitaIteration(); break;
+                case RAB: WorkerIteration(); break;
+            }
+        }
+        void QueenIteration()
+        {
+            PutEggs();
+
+        }
+        void SwitaIteration()
+        {
+            GetQueenInfo(); // not complite
+        }
+        void WorkerIteration()
+        {
+            ToSvita();
+            Work();
         }
 
     }
