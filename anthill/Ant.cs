@@ -34,7 +34,7 @@ namespace anthill
         public const int MaxAntIntHill = 30;
 
         // Царица 15 - 20 лет, Свита и рабочие 7 лет
-        int QnMxTtl = 65535; int SwMxTtl = 55535; int WkMXTtl = 10000;
+        int QnMxTtl = 55; int SwMxTtl = 35; int WkMXTtl = 20;
 
         public Ant()
         {
@@ -73,34 +73,25 @@ namespace anthill
 
         public void Destroy()
         {
-            //Console.WriteLine($"{this.allive}-31");
             if (this.Health == -1)
             {
-                //Console.WriteLine($"{this.allive}-32");
-                //Console.WriteLine("Ошибка в дестрое муравья");
                 allive = false;
                 return;
             }
-            //Console.WriteLine($"{this.allive}-33");
             switch (this.Status)
             {
                 case QN: allive = !QueenDestroy();
-                    //Console.WriteLine($"{this.allive}-331");
                     break;
                 case SW: allive = !SwDestroy();
-                    //Console.WriteLine($"{this.allive}-332");
                     break;
                 case RAB: allive = !WorkerDestroy();
-                    //Console.WriteLine($"{this.allive}-333");
                     break;
             }
-            //Console.WriteLine($"{this.allive}-34");
         }
         public bool QueenDestroy()
         {
             if (Ttl > QnMxTtl)
             {
-                //Console.WriteLine("Ошибка в дестрое королевы");
                 Q_id = null;
                 return true;
             }
@@ -113,7 +104,6 @@ namespace anthill
             // egg = EggCount();
             if ((egg > 0 && Q_id != null && Q_id != this.Id) || (Ttl > SwMxTtl))
             {
-                //Console.WriteLine("Ошибка в дестрое свиты");
                 svita_count--;
                 return true;
             }
@@ -121,14 +111,10 @@ namespace anthill
         }
         public bool WorkerDestroy()
         {
-            //Console.WriteLine($"{this.allive}-333-1");
             if ((fail_counter > 2 && this.Health == 1) || (Ttl > WkMXTtl))
             {
-                //Console.WriteLine($"{this.allive}-333-11");
-                //Console.WriteLine("Ошибка в дестрое рабочего");
                 return true;
             }
-            //Console.WriteLine($"{this.allive}-333-12");
             return false;
         }
 
@@ -136,9 +122,27 @@ namespace anthill
         public void GetQueenInfo()
         {
             // Search in ants list ant where ant.id = Q_id
-            Console.WriteLine("Queen status = {Q.status}, age = {Q.ttl}. by ant-{this.Id}");
+            Ant Q = null;
+            if (AntHill != null)
+            {
+                var temp = AntHill.Where(x => x.Id == Q_id).ToList<Ant>();
+                if(temp.Count > 0)
+                {
+                    Q = temp[0];
+                }
+            }
+            if (Q != null)
+                Console.WriteLine($"Queen status = {Q.allive}, age = {Q.Ttl}. by ant-{this.Id}");
+            else
+            {
+                int i = new Random().Next(8,10);
+                Writen($"Королева отсутствует. by ant-{this.Id}",ConsoleColor.Red);
+                if (i == 8)
+                    PutEggs();
+            }
+
             Thread.Sleep(AntCong.GetQueenInfo);
-            //PutEggs();
+            
         }
 
         public void ToQueen()
@@ -158,6 +162,7 @@ namespace anthill
         // Workers
         public void Work()
         {
+            
             if (this.Ttl < 5)
             {
                 CareHive();
@@ -169,12 +174,12 @@ namespace anthill
         }
         private void CareHive()
         {
-            Console.WriteLine($"Ant {this.Id} on tudy in hive");
+            Writen($"Ant {this.Id} on tudy in hive (в улее)",ConsoleColor.DarkGray);
             Thread.Sleep(AntCong.CareHive);
         }
         private void Forage()
         {
-            Console.WriteLine($"Ant {this.Id} search food");
+            Console.WriteLine($"Ant {this.Id} search food(в поисках еды)",ConsoleColor.DarkGray);
             Random rand = new Random();
             int fail_chanse = rand.Next(0, 100);
             if (fail_chanse == 50)
@@ -185,16 +190,15 @@ namespace anthill
         }
         public void ToSvita()
         {
-            Console.ForegroundColor = ConsoleColor.Blue;
-            Console.WriteLine($"{this.Id} пытается стать свитой");
-            Console.ResetColor();
+            
             if (this.Status != SW || this.Status != QN)
             {
-                if (svita_count < 5) //10
+                if (svita_count < AntCong.MaxSvitaCount) //10
                 {
                     this.Status = SW;
                     svita_count++;
                     Thread.Sleep(AntCong.ToSvita);
+                    Writen($"{this.Id} стаёт свитой", ConsoleColor.Blue);
                 }
             }
         }
@@ -205,58 +209,55 @@ namespace anthill
             {
                 if (Egg.Clutch == null || Egg.Clutch.Count < Egg.max_egg)
                 {
+                    Console.ForegroundColor = ConsoleColor.Magenta;
                     int count = new Random().Next(3, 9);
+                    Console.WriteLine($"Муравей-{this.Id} с рангом {this.Status} откладывает яйца ({count}шт)");
                     for (int i = 0; i < count; i++)
                         new Egg(this.Id);
                     Thread.Sleep(AntCong.PutEgg);
+                    Console.ResetColor();
                 }
             }
         }
 
         public void AntIteration()
         {
-            //Console.WriteLine($"{this.allive}-2");
             this.Destroy();
-            //Console.WriteLine($"{this.allive}-3");
             this.Eat();
-            //Console.WriteLine($"{this.allive}-4");
-            //Console.WriteLine($"GGGGGGGGGGGGGGGG");
             switch (this.Status)
             {
                 case QN: QueenIteration();
-                    //Console.WriteLine($"{this.allive}-5");
                     break;
                 case SW: SwitaIteration();
-                    //Console.WriteLine($"{this.allive}-6");
                     break;
                 case RAB: WorkerIteration();
-                    //Console.WriteLine($"{this.allive}-7");
                     break;
             }
-            //Console.WriteLine($"{this.allive}-8");
-        }
-        public static void DB(int i)
-        {
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine($"Compl {i}");
-            Console.ResetColor();
         }
         void QueenIteration()
         {
+            Writen($"Королева - {this.Id} контролирует улий",ConsoleColor.Magenta);
             PutEggs();
 
         }
         void SwitaIteration()
         {
+            
             GetQueenInfo(); // not complite
         }
         void WorkerIteration()
         {
-            DB(7);
             ToSvita();
-            DB(8);
             Work();
-            DB(9);
+
+        }
+
+        public static void Writen(string msg, ConsoleColor color)
+        {
+            var tmp = Console.ForegroundColor;
+            Console.ForegroundColor = color;
+            Console.WriteLine(msg);
+            Console.ForegroundColor = tmp;
         }
 
     }

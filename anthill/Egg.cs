@@ -13,7 +13,7 @@ namespace anthill
         public delegate void HchEgg(string msg);
         public static event HchEgg OnHatchEgg;
         int ttl;
-        int ttlHatch = 2;//10
+        int ttlHatch = 3;//10
         static public List<Egg> Clutch;
         public ulong ParrentId { get;}
         public Egg(ulong parrent)

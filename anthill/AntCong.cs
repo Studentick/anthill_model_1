@@ -18,13 +18,17 @@ namespace anthill
         public const int Forage = 300;
         // Время на получение информации о королеве
         public const int GetQueenInfo = 150;
+        // Максимальное значение свиты
+        public const int MaxSvitaCount = 2; // 10
 
 
-        // 
+
+        // Время на уничтожение яйца
         public const int DestroyEgg = 100;
 
-
-        public const int RingOfSansara = 35000;
-        public const int AntLiveCicle = 5000; 
+        // Время между днями
+        public const int RingOfSansara = 55000;
+        // Ожидать после того как муравей отработал 1 цыкл
+        public const int AntLiveCicle =9000; 
     }
 }

@@ -9,6 +9,8 @@ namespace anthill
 {
     class Program
     {
+        static ulong day = 0;
+        static bool loop = true;
         public static int d = 0;
         public delegate void NtDay();
         public static event NtDay NextMonth;
@@ -37,10 +39,21 @@ namespace anthill
             Egg.OnHatchEgg += (msg) => { Console.WriteLine(msg); };
             NextMonth += () => { Console.WriteLine($"Прошел {d}-й день в муравейнике"); d++; };
             RingOfSansara();
-            //new Ant();
+            new Ant();
+            new Ant();
+            new Ant();
+            new Ant();
             new Ant();
             Console.WriteLine("fggfgfdg");
+            while (loop)
+            {
+                var t = Console.ReadLine();
+                if (t == "p")
+                {
+                    loop = false;
+                }
 
+            }
             Console.ReadKey();
         }
 
@@ -48,12 +61,11 @@ namespace anthill
         {
             new Thread(() =>
             {
-                Ant.DB(-1);
-                while (ant.allive)
+                while (ant.allive && loop)
                 {
-                    Console.WriteLine($"Муравей-{ant.Id} Начал работу ");
+                    Console.WriteLine($"\tМ-{ant.Id} Start---");
                     ant.AntIteration();
-                    Console.WriteLine($"Муравей-{ant.Id} Закончил работу ");
+                    Console.WriteLine($"\t---М-{ant.Id} Finish");
                     Thread.Sleep(AntCong.AntLiveCicle);
                 }
                 Ant.AntHill.Remove(ant);
@@ -65,10 +77,13 @@ namespace anthill
         {
             new Thread(() =>
             {
-                while (true)
+                while (loop)
                 {
+                    Ant.Writen($"Наступил день {day}-й:\r\n", ConsoleColor.DarkGreen);
+                    
                     NextMonth?.Invoke();
                     Thread.Sleep(AntCong.RingOfSansara);
+                    day++;
                 }
             }).Start();
         }
