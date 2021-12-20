@@ -157,6 +157,7 @@ namespace anthill
                     tmp.AsParallel().ForAll(x => x.Destroy());
                     List<Egg> temp2 = Egg.Clutch.Where(x => x.ParrentId != this.Id).ToList<Egg>();
                     temp2.AsParallel().ForAll(x=>x.Destroy());
+                    Ant.svita_count--;
                 }
         }
         // Workers
